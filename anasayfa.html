@@ -1,8 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html lang="tr">
 <head>
+  <meta charset="UTF-8">
   <title>Turkay UTT - Anasayfa</title>
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <style>
     .nasa-image {
       max-height: 300px;
@@ -11,11 +13,28 @@
       margin: 0 auto 15px auto;
       display: block;
     }
-
     .translate-note {
       text-align: center;
       font-size: 14px;
       color: #777;
+      margin-bottom: 30px;
+    }
+    #apodGame button {
+      margin: 5px;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      background-color: #0052cc;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    #apodGame button:hover {
+      background-color: #003f99;
+    }
+    #satelliteMap {
+      height: 400px;
+      border-radius: 12px;
       margin-bottom: 30px;
     }
   </style>
@@ -31,6 +50,7 @@
     </div>
 
     <p id="welcomeUser">Hoş geldiniz!</p>
+    <p id="userScore">Puanınız: Yükleniyor...</p>
 
     <h2>📢 Etkinlik Duyuruları</h2>
     <ul>
@@ -44,7 +64,12 @@
 
     <h2>🧠 Bugünün NASA Görseli</h2>
     <div id="aiHaberleri">Yükleniyor...</div>
-    <p class="translate-note">🌐 İçeriği Türkçeye çevirmek için tarayıcınızın çeviri özelliğini kullanabilirsiniz (örneğin Chrome: Sağ tık → "Türkçeye çevir").</p>
+
+    <h2>🎯 Günün Görselini Tahmin Et</h2>
+    <div id="apodGame">Yükleniyor...</div>
+
+    <h2>🛰️ Kendi Uydunu Yerleştir</h2>
+    <div id="satelliteMap">Harita yükleniyor...</div>
 
     <h2>🔗 Topluluk Bağlantıları</h2>
     <ul id="baglantilar">
@@ -53,7 +78,6 @@
       <li><a href="#">Etkinlik Takvimi</a></li>
     </ul>
 
-    <!-- Sadece buton bırakıldı -->
     <button id="adminBtn" style="display: none;">🔐 Admin Paneli</button>
     <button id="toggleDarkMode">🌙 Karanlık Mod</button>
     <button id="logoutBtn">Çıkış Yap</button>
@@ -64,78 +88,11 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
 
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyDhEI-87Pb-PE7MJBUvjJybxBvkZ6fSLdM",
-      authDomain: "turkay-utt.firebaseapp.com",
-      projectId: "turkay-utt",
-      storageBucket: "turkay-utt.firebasestorage.app",
-      messagingSenderId: "164971626850",
-      appId: "1:164971626850:web:0afd556140f5d88a8a2c3b"
-    };
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.firestore();
-
-    auth.onAuthStateChanged((user) => {
-      if (user) {
-        document.getElementById("welcomeUser").textContent =
-          `Hoş geldiniz, ${user.email}!`;
-        if (user.email === "osmane722@gmail.com") {
-          document.getElementById("adminBtn").style.display = "block";
-        }
-      } else {
-        window.location.href = "login.html";
-      }
-    });
-
-    document.getElementById("adminBtn").addEventListener("click", () => {
-      window.location.href = "admin.html";
-    });
-
-    db.collection("gununBilgisi")
-      .limit(1)
-      .get()
-      .then(snapshot => {
-        if (!snapshot.empty) {
-          const bilgi = snapshot.docs[0].data().bilgi;
-          document.getElementById("gununBilgisi").innerText = bilgi;
-        } else {
-          document.getElementById("gununBilgisi").innerText = "Henüz bilgi eklenmedi.";
-        }
-      })
-      .catch(error => {
-        document.getElementById("gununBilgisi").innerText =
-          "Veri alınamadı: " + error.message;
-      });
-
-    document.getElementById("toggleDarkMode").addEventListener("click", () => {
-      document.body.classList.toggle("dark-mode");
-    });
-
-    document.getElementById("logoutBtn").addEventListener("click", () => {
-      auth.signOut().then(() => window.location.href = "login.html");
-    });
-
-    // NASA APOD verisi çek
-    const nasaKey = "e1aGFAATXPdCyvZ4dK1fAdQaYBHxWkakMNwBGwIf";
-    const aiDiv = document.getElementById("aiHaberleri");
-
-    fetch(`https://api.nasa.gov/planetary/apod?api_key=${nasaKey}`)
-      .then(res => res.json())
-      .then(data => {
-        aiDiv.innerHTML = `
-          <img src="${data.url}" class="nasa-image" alt="${data.title}">
-          <h4>${data.title}</h4>
-          <p>${data.explanation}</p>
-          <a href="${data.hdurl}" target="_blank">🔗 Orijinal Görüntü</a>
-        `;
-      })
-      .catch(err => {
-        aiDiv.innerHTML = "Görsel alınamadı.";
-        console.error("NASA API Hatası:", err);
-      });
-  </script>
+  <!-- JS dosyaları -->
+  <script src="anasayfa.js"></script>
+  <script src="uyduyerlestir.js"></script>
 </body>
 </html>

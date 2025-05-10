@@ -18,7 +18,7 @@ const firebaseConfig = {
     auth.createUserWithEmailAndPassword(email, password)
       .then((userCredential) => {
         alert("Kayıt başarılı!");
-        window.location.href = "login.html";
+        window.location.href = "index.html";
       })
       .catch((error) => {
         alert("Hata: " + error.message);

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Turkay UTT - Kayıt Ol</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <form>
+    <h2>Kayıt Ol</h2>
+    <input type="email" id="email" placeholder="E-posta" required>
+    <input type="password" id="password" placeholder="Şifre" required>
+    <button id="signupBtn" type="button">Kayıt Ol</button>
+    <p>Zaten hesabın var mı? <a href="login.html">Giriş Yap</a></p>
+  </form>
+
+  <!-- Firebase SDK'ları -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+
+  <!-- Kendi JS dosyan -->
+  <script src="signup.js"></script>
+</body>
+</html>

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Bilgi Yönetimi - Admin</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>🧠 Günün Bilgileri - Yönet</h1>
+    <div id="liste">Yükleniyor...</div>
+    <button id="logoutBtn">Çıkış Yap</button>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDhEI-87Pb-PE7MJBUvjJybxBvkZ6fSLdM",
+      authDomain: "turkay-utt.firebaseapp.com",
+      projectId: "turkay-utt",
+      storageBucket: "turkay-utt.firebasestorage.app",
+      messagingSenderId: "164971626850",
+      appId: "1:164971626850:web:0afd556140f5d88a8a2c3b"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    auth.onAuthStateChanged(user => {
+      if (!user || user.email !== "osmane722@gmail.com") {
+        alert("Bu sayfaya sadece yönetici erişebilir.");
+        window.location.href = "anasayfa.html";
+        return;
+      }
+
+      db.collection("gununBilgisi")
+        .orderBy("tarih", "desc")
+        .get()
+        .then(snapshot => {
+          const liste = document.getElementById("liste");
+          if (snapshot.empty) {
+            liste.innerHTML = "<p>Henüz bilgi eklenmemiş.</p>";
+            return;
+          }
+
+          liste.innerHTML = "";
+          snapshot.forEach(doc => {
+            const data = doc.data();
+            liste.innerHTML += `
+              <div style="margin-bottom: 10px;">
+                <p><strong>${data.tarih || "Tarih Yok"}:</strong> ${data.bilgi}</p>
+                <button onclick="duzenle('${doc.id}', \`${data.bilgi}\`)">📝 Düzenle</button>
+                <button onclick="sil('${doc.id}')">❌ Sil</button>
+                <hr>
+              </div>
+            `;
+          });
+        });
+    });
+
+    function sil(id) {
+      if (confirm("Bu bilgiyi silmek istediğinize emin misiniz?")) {
+        db.collection("gununBilgisi").doc(id).delete().then(() => {
+          alert("Silindi.");
+          location.reload();
+        });
+      }
+    }
+
+    function duzenle(id, eskiBilgi) {
+      const yeni = prompt("Yeni bilgiyi girin:", eskiBilgi);
+      if (yeni && yeni.trim() !== "") {
+        db.collection("gununBilgisi").doc(id).update({ bilgi: yeni.trim() })
+          .then(() => {
+            alert("Bilgi güncellendi.");
+            location.reload();
+          });
+      }
+    }
+
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+      auth.signOut().then(() => window.location.href = "login.html");
+    });
+  </script>
+</body>
+</html>

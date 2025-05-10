@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Turkay UTT - Giriş</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <form>
+    <h2>Giriş Yap</h2>
+    <input type="email" id="email" placeholder="E-posta" required>
+    <input type="password" id="password" placeholder="Şifre" required>
+    <button id="loginBtn" type="button">Giriş Yap</button>
+    <p>Hesabın yok mu? <a href="signup.html">Kayıt Ol</a></p>
+  </form>
+
+  <!-- Firebase CDN'leri (compat sürümleri) -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+
+  <!-- Giriş JS dosyası -->
+  <script src="login.js"></script>
+</body>
+</html>

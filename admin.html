@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Paneli - Turkay UTT</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>🔐 Admin Paneli</h1>
+    <p id="adminEmail">Yükleniyor...</p>
+
+    <h2>Üyelik Yönetimi</h2>
+    <ul>
+      <li><a href="uyelikOnay.html">✅ Başvuru Onaylama</a></li>
+      <li><a href="uyelikListe.html">📄 Tüm Üyeler</a></li>
+    </ul>
+
+    <h2>Bilgi Yönetimi</h2>
+    <ul>
+      <li><a href="bilgiEkle.html">➕ Yeni Bilgi Ekle</a></li>
+      <li><a href="bilgiYonet.html">✍️ Bilgileri Düzenle / Sil</a></li>
+    </ul>
+
+    <h2>Etkinlik Yönetimi</h2>
+    <ul>
+      <li><a href="etkinlikEkle.html">➕ Etkinlik Ekle</a></li>
+      <li><a href="etkinlikListe.html">🗓️ Etkinlik Listesi</a></li>
+    </ul>
+
+    <h2>İstatistikler</h2>
+    <ul>
+      <li><a href="istatistikler.html">📊 Üyelik ve Katılım Analizi</a></li>
+    </ul>
+
+    <h2>Yönetim</h2>
+    <ul>
+      <li><a href="yetkiYonetimi.html">🔑 Yetki Yönetimi</a></li>
+    </ul>
+
+    <button id="logoutBtn">❌ Çıkış Yap</button>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>

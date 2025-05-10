@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Turkay UTT - Anasayfa</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .nasa-image {
+      max-height: 300px;
+      width: 500px;
+      border-radius: 12px;
+      margin: 0 auto 15px auto;
+      display: block;
+    }
+
+    .translate-note {
+      text-align: center;
+      font-size: 14px;
+      color: #777;
+      margin-bottom: 30px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <img src="turkayutt.jpg" alt="Turkay UTT Logo" class="logo">
+      <div class="title-group">
+        <h1>Turkay UTT</h1>
+        <h3>Uzay Teknolojileri Topluluğu</h3>
+      </div>
+    </div>
+
+    <p id="welcomeUser">Hoş geldiniz!</p>
+
+    <h2>📢 Etkinlik Duyuruları</h2>
+    <ul>
+      <li>🚀 Roket Tasarım Atölyesi – 20 Mayıs</li>
+      <li>🛰️ Model Uydu Yarışması Hazırlık Kampı – Haziran 2025</li>
+      <li>🌌 TÜBİTAK Ulusal Gözlemevi Teknik Gezisi – Yapıldı ✅</li>
+    </ul>
+
+    <h2>📚 Günün Uzay Bilgisi</h2>
+    <p id="gununBilgisi">Yükleniyor...</p>
+
+    <h2>🧠 Bugünün NASA Görseli</h2>
+    <div id="aiHaberleri">Yükleniyor...</div>
+    <p class="translate-note">🌐 İçeriği Türkçeye çevirmek için tarayıcınızın çeviri özelliğini kullanabilirsiniz (örneğin Chrome: Sağ tık → "Türkçeye çevir").</p>
+
+    <h2>🔗 Topluluk Bağlantıları</h2>
+    <ul id="baglantilar">
+      <li><a href="toplulugaüyeol.html">Üyelik Başvuru Formu</a></li>
+      <li><a href="#">Notlar ve Kaynaklar</a></li>
+      <li><a href="#">Etkinlik Takvimi</a></li>
+    </ul>
+
+    <!-- Sadece buton bırakıldı -->
+    <button id="adminBtn" style="display: none;">🔐 Admin Paneli</button>
+    <button id="toggleDarkMode">🌙 Karanlık Mod</button>
+    <button id="logoutBtn">Çıkış Yap</button>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDhEI-87Pb-PE7MJBUvjJybxBvkZ6fSLdM",
+      authDomain: "turkay-utt.firebaseapp.com",
+      projectId: "turkay-utt",
+      storageBucket: "turkay-utt.firebasestorage.app",
+      messagingSenderId: "164971626850",
+      appId: "1:164971626850:web:0afd556140f5d88a8a2c3b"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        document.getElementById("welcomeUser").textContent =
+          `Hoş geldiniz, ${user.email}!`;
+        if (user.email === "osmane722@gmail.com") {
+          document.getElementById("adminBtn").style.display = "block";
+        }
+      } else {
+        window.location.href = "login.html";
+      }
+    });
+
+    document.getElementById("adminBtn").addEventListener("click", () => {
+      window.location.href = "admin.html";
+    });
+
+    db.collection("gununBilgisi")
+      .limit(1)
+      .get()
+      .then(snapshot => {
+        if (!snapshot.empty) {
+          const bilgi = snapshot.docs[0].data().bilgi;
+          document.getElementById("gununBilgisi").innerText = bilgi;
+        } else {
+          document.getElementById("gununBilgisi").innerText = "Henüz bilgi eklenmedi.";
+        }
+      })
+      .catch(error => {
+        document.getElementById("gununBilgisi").innerText =
+          "Veri alınamadı: " + error.message;
+      });
+
+    document.getElementById("toggleDarkMode").addEventListener("click", () => {
+      document.body.classList.toggle("dark-mode");
+    });
+
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+      auth.signOut().then(() => window.location.href = "login.html");
+    });
+
+    // NASA APOD verisi çek
+    const nasaKey = "e1aGFAATXPdCyvZ4dK1fAdQaYBHxWkakMNwBGwIf";
+    const aiDiv = document.getElementById("aiHaberleri");
+
+    fetch(`https://api.nasa.gov/planetary/apod?api_key=${nasaKey}`)
+      .then(res => res.json())
+      .then(data => {
+        aiDiv.innerHTML = `
+          <img src="${data.url}" class="nasa-image" alt="${data.title}">
+          <h4>${data.title}</h4>
+          <p>${data.explanation}</p>
+          <a href="${data.hdurl}" target="_blank">🔗 Orijinal Görüntü</a>
+        `;
+      })
+      .catch(err => {
+        aiDiv.innerHTML = "Görsel alınamadı.";
+        console.error("NASA API Hatası:", err);
+      });
+  </script>
+</body>
+</html>

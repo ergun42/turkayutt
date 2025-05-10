@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Üyelik Listesi - Admin</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>👥 Onaylı Üyeler</h1>
+    <div id="liste">Yükleniyor...</div>
+    <button id="logoutBtn">Çıkış Yap</button>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDhEI-87Pb-PE7MJBUvjJybxBvkZ6fSLdM",
+      authDomain: "turkay-utt.firebaseapp.com",
+      projectId: "turkay-utt",
+      storageBucket: "turkay-utt.firebasestorage.app",
+      messagingSenderId: "164971626850",
+      appId: "1:164971626850:web:0afd556140f5d88a8a2c3b"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    auth.onAuthStateChanged(user => {
+      if (!user || user.email !== "osmane722@gmail.com") {
+        alert("Bu sayfaya yalnızca yönetici erişebilir.");
+        window.location.href = "anasayfa.html";
+        return;
+      }
+
+      db.collection("uyelikBasvurulari").where("onayDurumu", "==", "onaylandı")
+        .get()
+        .then(snapshot => {
+          const div = document.getElementById("liste");
+          if (snapshot.empty) {
+            div.innerHTML = "<p>Hiç onaylı üye bulunamadı.</p>";
+            return;
+          }
+
+          div.innerHTML = "";
+          snapshot.forEach(doc => {
+            const data = doc.data();
+            div.innerHTML += `
+              <div>
+                <strong>${data.fullName}</strong> – ${data.email}
+              </div>
+              <hr>
+            `;
+          });
+        });
+    });
+
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+      auth.signOut().then(() => {
+        window.location.href = "login.html";
+      });
+    });
+  </script>
+</body>
+</html>

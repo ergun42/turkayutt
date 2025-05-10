@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>İstatistikler - Admin</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h1>📊 Üyelik ve İçerik İstatistikleri</h1>
+    <p id="istatistikOzet">Yükleniyor...</p>
+
+    <canvas id="istatistikChart" width="400" height="200"></canvas>
+    <button id="logoutBtn">Çıkış Yap</button>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDhEI-87Pb-PE7MJBUvjJybxBvkZ6fSLdM",
+      authDomain: "turkay-utt.firebaseapp.com",
+      projectId: "turkay-utt",
+      storageBucket: "turkay-utt.firebasestorage.app",
+      messagingSenderId: "164971626850",
+      appId: "1:164971626850:web:0afd556140f5d88a8a2c3b"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    auth.onAuthStateChanged(async user => {
+      if (!user || user.email !== "osmane722@gmail.com") {
+        alert("Bu sayfaya sadece yönetici erişebilir.");
+        window.location.href = "anasayfa.html";
+        return;
+      }
+
+      const ozetDiv = document.getElementById("istatistikOzet");
+      let uyeSayisi = 0;
+      let bilgiSayisi = 0;
+
+      // Onaylı üye sayısı
+      const uyeSnap = await db.collection("uyelikBasvurulari")
+        .where("onayDurumu", "==", "onaylandı").get();
+      uyeSayisi = uyeSnap.size;
+
+      // Bilgi sayısı
+      const bilgiSnap = await db.collection("gununBilgisi").get();
+      bilgiSayisi = bilgiSnap.size;
+
+      ozetDiv.innerText = `✅ Onaylı Üye: ${uyeSayisi} | 🧠 Bilgi Sayısı: ${bilgiSayisi}`;
+
+      // Chart
+      const ctx = document.getElementById("istatistikChart").getContext("2d");
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ['Onaylı Üye', 'Günlük Bilgi'],
+          datasets: [{
+            label: 'Toplam Sayı',
+            data: [uyeSayisi, bilgiSayisi],
+            backgroundColor: ['#4285F4', '#F4B400']
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { display: false }
+          },
+          scales: {
+            y: { beginAtZero: true }
+          }
+        }
+      });
+    });
+
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+      auth.signOut().then(() => window.location.href = "login.html");
+    });
+  </script>
+</body>
+</html>

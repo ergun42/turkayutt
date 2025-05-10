@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Yetki Yönetimi - Admin</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>🔑 Admin Yetki Yönetimi</h1>
+
+    <input type="email" id="yeniAdmin" placeholder="Yeni admin e-posta">
+    <button id="ekleBtn">➕ Admin Ekle</button>
+
+    <h2>🔐 Admin Listesi</h2>
+    <ul id="adminListesi">Yükleniyor...</ul>
+
+    <button id="logoutBtn">Çıkış Yap</button>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDhEI-87Pb-PE7MJBUvjJybxBvkZ6fSLdM",
+      authDomain: "turkay-utt.firebaseapp.com",
+      projectId: "turkay-utt",
+      storageBucket: "turkay-utt.firebasestorage.app",
+      messagingSenderId: "164971626850",
+      appId: "1:164971626850:web:0afd556140f5d88a8a2c3b"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    auth.onAuthStateChanged(user => {
+      if (!user || user.email !== "osmane722@gmail.com") {
+        alert("Bu sayfaya sadece yönetici erişebilir.");
+        window.location.href = "anasayfa.html";
+        return;
+      }
+
+      listeleAdminler();
+    });
+
+    function listeleAdminler() {
+      const ul = document.getElementById("adminListesi");
+      ul.innerHTML = "";
+
+      db.collection("yetkiler").get().then(snapshot => {
+        if (snapshot.empty) {
+          ul.innerHTML = "<li>Hiç admin kaydı yok.</li>";
+          return;
+        }
+
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          const li = document.createElement("li");
+          li.innerHTML = `${data.email} <button onclick="sil('${doc.id}')">❌</button>`;
+          ul.appendChild(li);
+        });
+      });
+    }
+
+    document.getElementById("ekleBtn").addEventListener("click", () => {
+      const email = document.getElementById("yeniAdmin").value.trim();
+      if (!email) return alert("E-posta giriniz.");
+
+      db.collection("yetkiler").add({ email: email }).then(() => {
+        alert("Yeni admin eklendi.");
+        document.getElementById("yeniAdmin").value = "";
+        listeleAdminler();
+      });
+    });
+
+    function sil(id) {
+      if (confirm("Bu yetkiyi silmek istiyor musunuz?")) {
+        db.collection("yetkiler").doc(id).delete().then(() => {
+          alert("Admin silindi.");
+          listeleAdminler();
+        });
+      }
+    }
+
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+      auth.signOut().then(() => window.location.href = "login.html");
+    });
+  </script>
+</body>
+</html>

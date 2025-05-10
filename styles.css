@@ -1,0 +1,191 @@
+
+body {
+    font-family: "Segoe UI", sans-serif;
+    background-color: #f4f7fa;
+    color: #333;
+    margin: 0;
+    padding: 0;
+    transition: background 0.3s, color 0.3s;
+    display: flex;
+    justify-content: center;
+    align-items: start;
+    min-height: 100vh;
+  }
+  
+  .container {
+    max-width: 800px;
+    margin: 40px auto;
+    background-color: white;
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 0 0 16px rgba(0, 0, 0, 0.05);
+    transition: background 0.3s, color 0.3s;
+  }
+  
+  .header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+    text-align: center;
+  }
+  
+  .logo {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  
+  .title-group h1 {
+    font-size: 24px;
+    color: #0052cc;
+    margin: 0;
+  }
+  
+  .title-group h3 {
+    font-size: 16px;
+    margin: 0;
+    color: #555;
+  }
+  
+  .dark-mode {
+    background-color: #121212;
+    color: #eee;
+  }
+  
+  .dark-mode .container {
+    background-color: #1e1e1e;
+    color: #eee;
+  }
+  
+  .dark-mode .title-group h1 {
+    color: #86a5ff;
+  }
+  
+  .dark-mode .title-group h3 {
+    color: #aaa;
+  }
+  
+  ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  ul li {
+    background-color: #eaf2fb;
+    padding: 10px;
+    margin-bottom: 8px;
+    border-radius: 8px;
+  }
+  
+  .dark-mode ul li {
+    background-color: #2a2a2a;
+  }
+  
+  #gununBilgisi {
+    background-color: #fdf5e6;
+    border-left: 4px solid #f0ad4e;
+    padding: 12px;
+    border-radius: 8px;
+    margin-top: 10px;
+  }
+  
+  .dark-mode #gununBilgisi {
+    background-color: #333;
+    border-left-color: #f0ad4e;
+  }
+  
+  #welcomeUser {
+    text-align: center;
+    font-size: 18px;
+    color: #444;
+    margin-bottom: 20px;
+  }
+  
+  a {
+    text-decoration: none;
+    color: #0052cc;
+  }
+  
+  a:hover {
+    text-decoration: underline;
+  }
+  
+  button {
+    background-color: #ff5c5c;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 20px;
+    font-weight: bold;
+    transition: background 0.3s;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  button:hover {
+    background-color: #cc4444;
+  }
+  
+  .dark-mode button {
+    background-color: #555;
+  }
+  
+  .dark-mode button:hover {
+    background-color: #777;
+  }
+  
+  form {
+    background: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+  }
+  
+  input,
+  textarea {
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 14px;
+    box-sizing: border-box;
+  }
+  
+  textarea {
+    resize: vertical;
+  }
+  
+  @media screen and (max-width: 600px) {
+    .container {
+      margin: 20px;
+      padding: 20px;
+    }
+  
+    button {
+      width: 100%;
+    }
+  
+    .logo {
+      width: 50px;
+      height: 50px;
+    }
+  
+    .title-group h1 {
+      font-size: 18px;
+    }
+  
+    .title-group h3 {
+      font-size: 14px;
+    }
+  }
+  
